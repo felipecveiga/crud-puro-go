@@ -1,17 +1,20 @@
 package model
 
+import "go.mongodb.org/mongo-driver/v2/bson"
+
 type User struct {
-	Name      string    `json:"name"`
-	Email     string    `json:"email"`
-	Sexo      string    `json:"sexo"`
-	Age       int       `json:"age"`
-	Phone     int       `json:"phone"`
-	Residence Residence `json:"residence"`
+	ID        bson.ObjectID `bson:"_id"`
+	Name      string        `bson:"name"`
+	Email     string        `bson:"email"`
+	Sexo      string        `bson:"sexo"`
+	Age       int           `bson:"age"`
+	Phone     int           `bson:"phone"`
+	Residence Residence     `bson:"residence"`
 }
 
 type Residence struct {
-	Street  string `json:"street"`
-	City    string `json:"city"`
-	Country string `json:"country"`
-	Number  int    `json:"number"`
+	Street  string `bson:"street"`
+	City    string `bson:"city"`
+	Country string `bson:"country"`
+	Number  int    `bson:"number"`
 }

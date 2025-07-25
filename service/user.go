@@ -4,13 +4,29 @@ import (
 	"errors"
 
 	"github.com/felipecveiga/crud-puro-go/model"
+	"github.com/felipecveiga/crud-puro-go/repository"
 )
 
-func CreateUser(payload *model.User) (string, error) {
+type UserService struct {
+	Repository *repository.UserRepository
+}
 
-	if payload.Name == "" {
-		return "", errors.New("erro ao criar conta")
+func NewUserService(r *repository.UserRepository) *UserService {
+	return &UserService{
+		Repository: r,
+	}
+}
+
+func (s *UserService) CreateUser(payload *model.User) error {
+
+	if payload.Name == "" || payload.Email == "" || payload.Phone == 0 {
+		return errors.New("erro ao criar conta, preenchimento obrigatório do nome, email e telefone")
 	}
 
-	return "create Sucess", nil
+	err := s.Repository.CreateUserDB(payload)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

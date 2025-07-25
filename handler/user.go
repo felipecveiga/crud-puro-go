@@ -8,7 +8,17 @@ import (
 	"github.com/felipecveiga/crud-puro-go/service"
 )
 
-func Create(response http.ResponseWriter, request *http.Request) {
+type UserHandler struct {
+	Service *service.UserService
+}
+
+func NewUserHandler(s *service.UserService) *UserHandler {
+	return &UserHandler{
+		Service: s,
+	}
+}
+
+func (h *UserHandler) Create(response http.ResponseWriter, request *http.Request) {
 	if request.Method != http.MethodPost {
 		http.Error(response, "método HTTP inválido para requisição", http.StatusMethodNotAllowed)
 	}
@@ -19,12 +29,11 @@ func Create(response http.ResponseWriter, request *http.Request) {
 		http.Error(response, "erro no body da requisição", http.StatusBadRequest)
 	}
 
-	result, err := service.CreateUser(payload)
+	err = h.Service.CreateUser(payload)
 	if err != nil {
-		http.Error(response, "erro ao criar conta do usuário", http.StatusBadRequest)
+		http.Error(response, err.Error(), http.StatusBadRequest)
+		return
 	}
-	
-	response.Header().Set("Content-Type", "application/json")
+
 	response.WriteHeader(http.StatusOK)
-	json.NewEncoder(response).Encode(result)
 }
