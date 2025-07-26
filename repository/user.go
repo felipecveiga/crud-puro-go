@@ -20,7 +20,6 @@ func NewUserRepository(clientDB *mongo.Client) *UserRepository {
 func (r *UserRepository) CreateUserDB(payload *model.User) error {
 	coll := r.DB.Database("estudo_mongo").Collection("funcionarios")
 	doc := model.User{
-		ID:    payload.ID,
 		Name:  payload.Name,
 		Email: payload.Email,
 		Sexo:  payload.Sexo,
