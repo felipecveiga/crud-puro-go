@@ -7,17 +7,21 @@ import (
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
-type UserRepository struct {
+type Repository interface {
+	CreateUserDB(payload *model.User) error
+}
+
+type repository struct {
 	DB *mongo.Client
 }
 
-func NewUserRepository(clientDB *mongo.Client) *UserRepository {
-	return &UserRepository{
+func NewUserRepository(clientDB *mongo.Client) Repository {
+	return &repository{
 		DB: clientDB,
 	}
 }
 
-func (r *UserRepository) CreateUserDB(payload *model.User) error {
+func (r *repository) CreateUserDB(payload *model.User) error {
 	coll := r.DB.Database("estudo_mongo").Collection("funcionarios")
 	doc := model.User{
 		Name:  payload.Name,

@@ -8,17 +8,21 @@ import (
 	"github.com/felipecveiga/crud-puro-go/service"
 )
 
-type UserHandler struct {
-	Service *service.UserService
+type Handler interface{
+	Create(response http.ResponseWriter, request *http.Request)
 }
 
-func NewUserHandler(s *service.UserService) *UserHandler {
-	return &UserHandler{
+type handler struct {
+	Service service.Service
+}
+
+func NewUserHandler(s service.Service) Handler {
+	return &handler{
 		Service: s,
 	}
 }
 
-func (h *UserHandler) Create(response http.ResponseWriter, request *http.Request) {
+func (h *handler) Create(response http.ResponseWriter, request *http.Request) {
 	if request.Method != http.MethodPost {
 		http.Error(response, "método HTTP inválido para requisição", http.StatusMethodNotAllowed)
 	}
