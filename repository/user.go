@@ -7,6 +7,8 @@ import (
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
+//go:generate mockgen -source=./user.go -destination=./user_mock.go -package=repository
+
 type Repository interface {
 	CreateUserDB(payload *model.User) error
 }

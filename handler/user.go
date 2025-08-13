@@ -8,6 +8,7 @@ import (
 	"github.com/felipecveiga/crud-puro-go/service"
 )
 
+//go:generate mockgen -source=./user.go -destination=./user_mock.go -package=handler
 type Handler interface{
 	Create(response http.ResponseWriter, request *http.Request)
 }

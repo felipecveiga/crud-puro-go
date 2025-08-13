@@ -7,6 +7,7 @@ import (
 	"github.com/felipecveiga/crud-puro-go/repository"
 )
 
+//go:generate mockgen -source=./user.go -destination=./user_mock.go -package=service
 type Service interface {
 	CreateUser(payload *model.User) error
 }
