@@ -26,6 +26,7 @@ func NewUserHandler(s service.Service) Handler {
 func (h *handler) Create(response http.ResponseWriter, request *http.Request) {
 	if request.Method != http.MethodPost {
 		http.Error(response, "método HTTP inválido para requisição", http.StatusMethodNotAllowed)
+		return
 	}
 
 	payload := new(model.User)

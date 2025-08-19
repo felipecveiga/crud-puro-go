@@ -77,7 +77,7 @@ func TestCreateUserHandler_WhenReturError(t *testing.T) {
 	endpoint := "/create"
 	request := httptest.NewRequest("POST", endpoint, body)
 	response := httptest.NewRecorder()
-	request.Header.Add("Content-Type", "Application/json")
+	request.Header.Add("Content-Type", "application/json")
 
 	mockService.EXPECT().
 		CreateUser(gomock.Any()).
@@ -87,6 +87,25 @@ func TestCreateUserHandler_WhenReturError(t *testing.T) {
 
 	if response.Code != http.StatusBadRequest {
 		t.Errorf("erro no status code, esperado: %d, retornado: %d", http.StatusBadRequest, response.Code)
+		return
+	}
+}
+
+func TestCreateUserHandler_WhenReturErrorMethodRequest(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	mockService := service.NewMockService(ctrl)
+	handler := NewUserHandler(mockService)
+
+	endpoint := "/create"
+	request := httptest.NewRequest("GET", endpoint, nil)
+	response := httptest.NewRecorder()
+	request.Header.Add("Content-Type", "application/json")
+
+	handler.Create(response, request)
+
+	if response.Code != http.StatusMethodNotAllowed {
+		t.Errorf("erro no método da requisição, erro retornado: %d", response.Code)
 		return
 	}
 }
