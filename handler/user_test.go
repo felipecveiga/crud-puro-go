@@ -3,6 +3,7 @@ package handler
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -38,15 +39,54 @@ func TestCreateUserHandler_WhenReturSucess(t *testing.T) {
 
 	body, _ := json.Marshal(user)
 	r := bytes.NewReader(body)
-	url := "/create"
-	request := httptest.NewRequest("POST", url, r)
+	endpoint := "/create"
+	request := httptest.NewRequest("POST", endpoint, r)
 	request.Header.Set("Content-Type", "application/json")
 	response := httptest.NewRecorder()
 
 	handler.Create(response, request)
 
 	if response.Code != http.StatusCreated {
-		t.Errorf("erro no status code, esperado 201 e retornado foi %d", response.Code)
+		t.Errorf("erro no status code, esperado: %d, retornado: %d", http.StatusCreated, response.Code)
+		return
+	}
+}
+
+func TestCreateUserHandler_WhenReturError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	mockService := service.NewMockService(ctrl)
+	handler := NewUserHandler(mockService)
+
+	user := model.User{
+		Name:  "Felipe",
+		Email: "felipe@gmail.com",
+		Sexo:  "Masculino",
+		Age:   31,
+		Phone: 21212121,
+		Residence: model.Residence{
+			Street:  "Brasil",
+			City:    "Rio de Janeiro",
+			Country: "Rua ABC",
+			Number:  30,
+		},
+	}
+
+	b, _ := json.Marshal(user)
+	body := bytes.NewReader(b)
+	endpoint := "/create"
+	request := httptest.NewRequest("POST", endpoint, body)
+	response := httptest.NewRecorder()
+	request.Header.Add("Content-Type", "Application/json")
+
+	mockService.EXPECT().
+		CreateUser(gomock.Any()).
+		Return(errors.New("erro ao cadastrar conta"))
+
+	handler.Create(response, request)
+
+	if response.Code != http.StatusBadRequest {
+		t.Errorf("erro no status code, esperado: %d, retornado: %d", http.StatusBadRequest, response.Code)
 		return
 	}
 }
