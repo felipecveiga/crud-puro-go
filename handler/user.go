@@ -33,6 +33,7 @@ func (h *handler) Create(response http.ResponseWriter, request *http.Request) {
 	err := json.NewDecoder(request.Body).Decode(payload)
 	if err != nil {
 		http.Error(response, "erro no body da requisição", http.StatusBadRequest)
+		return
 	}
 
 	err = h.Service.CreateUser(payload)

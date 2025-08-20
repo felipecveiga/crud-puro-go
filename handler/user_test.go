@@ -37,10 +37,9 @@ func TestCreateUserHandler_WhenReturSucess(t *testing.T) {
 		CreateUser(gomock.Any()).
 		Return(nil)
 
-	body, _ := json.Marshal(user)
-	r := bytes.NewReader(body)
 	endpoint := "/create"
-	request := httptest.NewRequest("POST", endpoint, r)
+	body, _ := json.Marshal(user)
+	request := httptest.NewRequest("POST", endpoint, bytes.NewReader(body))
 	request.Header.Set("Content-Type", "application/json")
 	response := httptest.NewRecorder()
 
@@ -72,10 +71,9 @@ func TestCreateUserHandler_WhenReturError(t *testing.T) {
 		},
 	}
 
-	b, _ := json.Marshal(user)
-	body := bytes.NewReader(b)
 	endpoint := "/create"
-	request := httptest.NewRequest("POST", endpoint, body)
+	body, _ := json.Marshal(user)
+	request := httptest.NewRequest("POST", endpoint, bytes.NewReader(body))
 	response := httptest.NewRecorder()
 	request.Header.Add("Content-Type", "application/json")
 
@@ -108,4 +106,24 @@ func TestCreateUserHandler_WhenReturErrorMethodRequest(t *testing.T) {
 		t.Errorf("erro no método da requisição, erro retornado: %d", response.Code)
 		return
 	}
+}
+
+func TestCreateUserHandler_WhenReturErrorBody(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	mockService := service.NewMockService(ctrl)
+	handler := NewUserHandler(mockService)
+
+	bodyInvalido := []byte(`{nome: "felipe"}`)
+
+	endpoint := "/create"
+	response := httptest.NewRecorder()
+	request := httptest.NewRequest("POST", endpoint, bytes.NewBuffer(bodyInvalido))
+	request.Header.Set("Content-Type", "application/json")
+
+	handler.Create(response, request)
+
+	if response.Code != http.StatusBadRequest {
+		t.Errorf("Status code esperado %d, retornado %d", http.StatusBadRequest, response.Code)
+	}
+
 }
