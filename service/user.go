@@ -1,8 +1,7 @@
 package service
 
 import (
-	"errors"
-
+	"github.com/felipecveiga/crud-puro-go/errs"
 	"github.com/felipecveiga/crud-puro-go/model"
 	"github.com/felipecveiga/crud-puro-go/repository"
 )
@@ -10,6 +9,7 @@ import (
 //go:generate mockgen -source=./user.go -destination=./user_mock.go -package=service
 type Service interface {
 	CreateUser(payload *model.User) error
+	GetUser(id string) (*model.User, error)
 }
 
 type service struct {
@@ -25,7 +25,7 @@ func NewUserService(r repository.Repository) Service {
 func (s *service) CreateUser(payload *model.User) error {
 
 	if payload.Name == "" || payload.Email == "" || payload.Phone == 0 {
-		return errors.New("erro ao criar conta, preenchimento obrigatório do nome, email e telefone")
+		return errs.ErrBodyRequest
 	}
 
 	err := s.Repository.CreateUserDB(payload)
@@ -34,4 +34,14 @@ func (s *service) CreateUser(payload *model.User) error {
 	}
 
 	return nil
+}
+
+func (s *service) GetUser(id string) (*model.User, error) {
+
+	user, err := s.Repository.FindByID(id)
+	if err != nil {
+		return &model.User{}, err
+	}
+
+	return user, nil
 }

@@ -110,6 +110,7 @@ func TestCreateUserHandler_WhenReturErrorMethodRequest(t *testing.T) {
 
 func TestCreateUserHandler_WhenReturErrorBody(t *testing.T) {
 	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 	mockService := service.NewMockService(ctrl)
 	handler := NewUserHandler(mockService)
 
@@ -125,5 +126,4 @@ func TestCreateUserHandler_WhenReturErrorBody(t *testing.T) {
 	if response.Code != http.StatusBadRequest {
 		t.Errorf("Status code esperado %d, retornado %d", http.StatusBadRequest, response.Code)
 	}
-
 }

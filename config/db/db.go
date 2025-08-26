@@ -5,15 +5,15 @@ import (
 	"log"
 	"time"
 
-	"go.mongodb.org/mongo-driver/v2/mongo"
-	"go.mongodb.org/mongo-driver/v2/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func Connection() *mongo.Client {
 
-	db, err := mongo.Connect(options.Client().ApplyURI("mongodb://localhost:27017"))
+	db, err := mongo.Connect(context.Background(), (options.Client().ApplyURI("mongodb://localhost:27017")))
 	if err != nil {
-		log.Panicf("erro ao conectar no banco: %v", err)
+		log.Panicf("error connecting to database: %v", err)
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)

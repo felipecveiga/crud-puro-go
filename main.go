@@ -20,6 +20,7 @@ func main() {
 	handler := handler.NewUserHandler(service)
 
 	http.HandleFunc("/create", handler.Create)
+	http.HandleFunc("/user/", handler.GetUser)
 
 	fmt.Println("Servidor HTTP Conectado")
 	log.Fatal(http.ListenAndServe(":8080", nil))
