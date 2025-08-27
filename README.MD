@@ -23,7 +23,7 @@ O objetivo principal é aprofundar o conhecimento na linguagem Go, explorando di
 
 ✅ Listar usuário (Read)
 
-❌ Listar usuário (Read) — em desenvolvimento
+❌ Listar usuários (Read) — em desenvolvimento
 
 ❌ Atualizar dados do usuário (Update) — em desenvolvimento
 
