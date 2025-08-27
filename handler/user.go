@@ -74,9 +74,10 @@ func (h *handler) GetUser(response http.ResponseWriter, request *http.Request) {
 			return
 		}
 		http.Error(response, err.Error(), http.StatusBadRequest)
+		return
 	}
 
-	response.WriteHeader(http.StatusOK)
 	response.Header().Set("Content-Type", "application/json")
+	response.WriteHeader(http.StatusOK)
 	json.NewEncoder(response).Encode(user)
 }
