@@ -21,7 +21,9 @@ O objetivo principal é aprofundar o conhecimento na linguagem Go, explorando di
 
 ✅ Criar usuário (Create)
 
-❌ Listar usuários (Read) — em desenvolvimento
+✅ Listar usuário (Read)
+
+❌ Listar usuário (Read) — em desenvolvimento
 
 ❌ Atualizar dados do usuário (Update) — em desenvolvimento
 
