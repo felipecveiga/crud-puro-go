@@ -47,7 +47,7 @@ func (r *repository) CreateUserDB(payload *model.User) error {
 
 	_, err := coll.InsertOne(context.TODO(), doc)
 	if err != nil {
-		return errs.ErrInsertUserDatabase
+		return errs.ErrUserInsertFailed
 	}
 
 	return nil
@@ -58,7 +58,7 @@ func (r *repository) FindByID(id string) (*model.User, error) {
 
 	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		return nil, errs.ErrConvertIDObjectID
+		return nil, errs.ErrInvalidObjectID
 	}
 
 	filter := bson.D{{Key: "_id", Value: objectID}}
@@ -70,7 +70,7 @@ func (r *repository) FindByID(id string) (*model.User, error) {
 			return nil, errs.ErrUserNotFound
 		}
 
-		return nil, errs.ErrSearchUser
+		return nil, errs.ErrUserSearchFailed
 	}
 
 	return &user, nil

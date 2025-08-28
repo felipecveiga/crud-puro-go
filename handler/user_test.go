@@ -80,7 +80,7 @@ func TestCreateUserHandler_WhenReturError(t *testing.T) {
 
 	mockService.EXPECT().
 		CreateUser(gomock.Any()).
-		Return(errs.ErrBodyRequest)
+		Return(errs.ErrMissingRequiredFields)
 
 	handler.Create(response, request)
 

@@ -29,7 +29,7 @@ func NewUserHandler(s service.Service) Handler {
 
 func (h *handler) Create(response http.ResponseWriter, request *http.Request) {
 	if request.Method != http.MethodPost {
-		http.Error(response, errs.ErrInvalidMethodRequest.Error(), http.StatusMethodNotAllowed)
+		http.Error(response, errs.ErrInvalidHTTPMethod.Error(), http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -52,7 +52,7 @@ func (h *handler) Create(response http.ResponseWriter, request *http.Request) {
 func (h *handler) GetUser(response http.ResponseWriter, request *http.Request) {
 
 	if request.Method != http.MethodGet {
-		http.Error(response, errs.ErrInvalidMethodRequest.Error(), http.StatusMethodNotAllowed)
+		http.Error(response, errs.ErrInvalidHTTPMethod.Error(), http.StatusMethodNotAllowed)
 		return
 	}
 

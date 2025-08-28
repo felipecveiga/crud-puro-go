@@ -25,7 +25,7 @@ func NewUserService(r repository.Repository) Service {
 func (s *service) CreateUser(payload *model.User) error {
 
 	if payload.Name == "" || payload.Email == "" || payload.Phone == 0 {
-		return errs.ErrBodyRequest
+		return errs.ErrMissingRequiredFields
 	}
 
 	err := s.Repository.CreateUserDB(payload)
