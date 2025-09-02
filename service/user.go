@@ -10,6 +10,7 @@ import (
 type Service interface {
 	CreateUser(payload *model.User) error
 	GetUser(id string) (*model.User, error)
+	GetAllUsers() ([]model.User, error)
 }
 
 type service struct {
@@ -44,4 +45,14 @@ func (s *service) GetUser(id string) (*model.User, error) {
 	}
 
 	return user, nil
+}
+
+func (s *service) GetAllUsers() ([]model.User, error) {
+
+	users, err := s.Repository.FindAll()
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
 }

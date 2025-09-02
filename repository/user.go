@@ -17,6 +17,7 @@ import (
 type Repository interface {
 	CreateUserDB(payload *model.User) error
 	FindByID(id string) (*model.User, error)
+	FindAll() ([]model.User, error)
 }
 
 type repository struct {
@@ -74,4 +75,18 @@ func (r *repository) FindByID(id string) (*model.User, error) {
 	}
 
 	return &user, nil
+}
+
+func (r *repository) FindAll() ([]model.User, error) {
+	coll := r.DB.Database("estudo_mongo").Collection("funcionarios")
+
+	var users []model.User
+	err := coll.Find(context.TODO()).Decode(&users)
+	if err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return nil, errs.ErrUserNotFound
+		}
+
+		return nil, errs.ErrUserSearchFailed
+	}
 }

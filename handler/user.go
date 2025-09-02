@@ -15,6 +15,7 @@ import (
 type Handler interface {
 	Create(response http.ResponseWriter, request *http.Request)
 	GetUser(response http.ResponseWriter, request *http.Request)
+	GetAllUsers(response http.ResponseWriter, request *http.Request)
 }
 
 type handler struct {
@@ -80,4 +81,26 @@ func (h *handler) GetUser(response http.ResponseWriter, request *http.Request) {
 	response.Header().Set("Content-Type", "application/json")
 	response.WriteHeader(http.StatusOK)
 	json.NewEncoder(response).Encode(user)
+}
+
+func (h *handler) GetAllUsers(response http.ResponseWriter, request *http.Request) {
+
+	if request.Method != http.MethodGet {
+		http.Error(response, errs.ErrInvalidHTTPMethod.Error(), http.StatusMethodNotAllowed)
+		return
+	}
+
+	users, err := h.Service.GetAllUsers()
+	if err != nil {
+		if errors.Is(err, errs.ErrUserNotFound) {
+			http.Error(response, err.Error(), http.StatusNotFound)
+			return
+		}
+		http.Error(response, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	response.Header().Set("Content-Type", "application/json")
+	response.WriteHeader(http.StatusOK)
+	json.NewEncoder(response).Encode(users)
 }
