@@ -54,6 +54,21 @@ func (mr *MockServiceMockRecorder) CreateUser(payload any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUser", reflect.TypeOf((*MockService)(nil).CreateUser), payload)
 }
 
+// GetAllUsers mocks base method.
+func (m *MockService) GetAllUsers() ([]model.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAllUsers")
+	ret0, _ := ret[0].([]model.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAllUsers indicates an expected call of GetAllUsers.
+func (mr *MockServiceMockRecorder) GetAllUsers() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllUsers", reflect.TypeOf((*MockService)(nil).GetAllUsers))
+}
+
 // GetUser mocks base method.
 func (m *MockService) GetUser(id string) (*model.User, error) {
 	m.ctrl.T.Helper()

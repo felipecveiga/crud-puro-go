@@ -92,7 +92,7 @@ func (h *handler) GetAllUsers(response http.ResponseWriter, request *http.Reques
 
 	users, err := h.Service.GetAllUsers()
 	if err != nil {
-		if errors.Is(err, errs.ErrUserNotFound) {
+		if errors.Is(err, errs.ErrUsersNotFound) {
 			http.Error(response, err.Error(), http.StatusNotFound)
 			return
 		}

@@ -80,13 +80,22 @@ func (r *repository) FindByID(id string) (*model.User, error) {
 func (r *repository) FindAll() ([]model.User, error) {
 	coll := r.DB.Database("estudo_mongo").Collection("funcionarios")
 
-	var users []model.User
-	err := coll.Find(context.TODO()).Decode(&users)
-	if err != nil {
-		if errors.Is(err, mongo.ErrNoDocuments) {
-			return nil, errs.ErrUserNotFound
-		}
+	filter := bson.M{}
 
-		return nil, errs.ErrUserSearchFailed
+	cursor, err := coll.Find(context.TODO(), filter)
+	if err != nil {
+		return nil, err
 	}
+
+	var users []model.User
+	err = cursor.All(context.TODO(), &users)
+	if err != nil {
+		return nil, errs.ErrUsersSearchFailed
+	}
+
+	if len(users) == 0 {
+		return nil, errs.ErrUsersNotFound
+	}
+
+	return users, nil
 }

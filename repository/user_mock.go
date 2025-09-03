@@ -54,6 +54,21 @@ func (mr *MockRepositoryMockRecorder) CreateUserDB(payload any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUserDB", reflect.TypeOf((*MockRepository)(nil).CreateUserDB), payload)
 }
 
+// FindAll mocks base method.
+func (m *MockRepository) FindAll() ([]model.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindAll")
+	ret0, _ := ret[0].([]model.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindAll indicates an expected call of FindAll.
+func (mr *MockRepositoryMockRecorder) FindAll() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAll", reflect.TypeOf((*MockRepository)(nil).FindAll))
+}
+
 // FindByID mocks base method.
 func (m *MockRepository) FindByID(id string) (*model.User, error) {
 	m.ctrl.T.Helper()

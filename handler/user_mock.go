@@ -52,6 +52,18 @@ func (mr *MockHandlerMockRecorder) Create(response, request any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockHandler)(nil).Create), response, request)
 }
 
+// GetAllUsers mocks base method.
+func (m *MockHandler) GetAllUsers(response http.ResponseWriter, request *http.Request) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "GetAllUsers", response, request)
+}
+
+// GetAllUsers indicates an expected call of GetAllUsers.
+func (mr *MockHandlerMockRecorder) GetAllUsers(response, request any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllUsers", reflect.TypeOf((*MockHandler)(nil).GetAllUsers), response, request)
+}
+
 // GetUser mocks base method.
 func (m *MockHandler) GetUser(response http.ResponseWriter, request *http.Request) {
 	m.ctrl.T.Helper()
