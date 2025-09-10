@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"io"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"testing"
 
 	"github.com/felipecveiga/crud-puro-go/errs"
@@ -239,5 +241,67 @@ func TestGetUserHandler_WhenReturnErrUserNotFound(t *testing.T) {
 	if response.Code != http.StatusNotFound {
 		t.Errorf("Status code esperado %d, retornado %d", http.StatusNotFound, response.Code)
 		return
+	}
+}
+
+func TestGetAllUsersHandler_WhenReturnSucess(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	mockService := service.NewMockService(ctrl)
+	handler := NewUserHandler(mockService)
+
+	endpoint := "/users"
+	response := httptest.NewRecorder()
+	request := httptest.NewRequest("GET", endpoint, nil)
+
+	users := []model.User{
+		{
+			Name:  "Felipe",
+			Email: "felipe@gmail.com",
+			Sexo:  "Masculino",
+			Age:   31,
+			Phone: 21212121,
+			Residence: model.Residence{
+				Street:  "Brasil",
+				City:    "Rio de Janeiro",
+				Country: "Rua ABC",
+				Number:  30,
+			},
+		},
+		{
+			Name:  "Isabelle",
+			Email: "Isabelle@gmail.com",
+			Sexo:  "Feminino",
+			Age:   29,
+			Phone: 21212121,
+			Residence: model.Residence{
+				Street:  "Brasil",
+				City:    "Rio de Janeiro",
+				Country: "Rua ABC",
+				Number:  30,
+			},
+		},
+	}
+
+	mockService.EXPECT().
+		GetAllUsers().
+		Return(users, nil)
+
+	handler.GetAllUsers(response, request)
+
+	if response.Code != http.StatusOK {
+		t.Errorf("Status code esperado %d, retornado %d", http.StatusOK, response.Code)
+		return
+	}
+
+	body, _ := io.ReadAll(response.Body)
+	var resposta []model.User
+	err := json.Unmarshal(body, &resposta)
+	if err != nil {
+		t.Fatalf("Erro ao decodificar resposta: %v", err)
+	}
+
+	if !reflect.DeepEqual(users, resposta) {
+		t.Errorf("Resposta esperada %+v, retornada %+v", users, resposta)
 	}
 }
