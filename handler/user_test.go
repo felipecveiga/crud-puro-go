@@ -346,3 +346,20 @@ func TestGetAllUsers_WhenReturnNotFound(t *testing.T) {
 		t.Errorf("esperava o erro %s, retornado %s", erroEsperado, response.Body.String())
 	}
 }
+
+func TestGetAllUsers_WhenReturnErrorMethodRequest(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	mockService := service.NewMockService(ctrl)
+	handler := NewUserHandler(mockService)
+
+	endpoint := "/users"
+	response := httptest.NewRecorder()
+	request := httptest.NewRequest("POST", endpoint, nil)
+
+	handler.GetAllUsers(response, request)
+
+	if response.Code != http.StatusMethodNotAllowed {
+		t.Errorf("método da requisição invalido eperado %d, resultado %d", http.StatusMethodNotAllowed, response.Code)
+	}
+}
