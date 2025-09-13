@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/felipecveiga/crud-puro-go/errs"
@@ -50,7 +51,6 @@ func TestCreateUserHandler_WhenReturSucess(t *testing.T) {
 
 	if response.Code != http.StatusCreated {
 		t.Errorf("erro no status code, esperado: %d, retornado: %d", http.StatusCreated, response.Code)
-		return
 	}
 }
 
@@ -88,7 +88,6 @@ func TestCreateUserHandler_WhenReturError(t *testing.T) {
 
 	if response.Code != http.StatusBadRequest {
 		t.Errorf("erro no status code, esperado: %d, retornado: %d", http.StatusBadRequest, response.Code)
-		return
 	}
 }
 
@@ -107,7 +106,6 @@ func TestCreateUserHandler_WhenReturErrorMethodRequest(t *testing.T) {
 
 	if response.Code != http.StatusMethodNotAllowed {
 		t.Errorf("erro no método da requisição, erro retornado: %d", response.Code)
-		return
 	}
 }
 
@@ -200,7 +198,6 @@ func TestGetUserHandler_WhenReturErrorMethodRequest(t *testing.T) {
 
 	if response.Code != http.StatusMethodNotAllowed {
 		t.Errorf("erro no método da requisição, erro retornado: %d", response.Code)
-		return
 	}
 }
 
@@ -218,7 +215,6 @@ func TestGetUserHandler_WhenReturErrorEndPoint(t *testing.T) {
 
 	if response.Code != http.StatusBadRequest {
 		t.Errorf("Status code esperado %d, retornado %d", http.StatusBadRequest, response.Code)
-		return
 	}
 }
 
@@ -240,7 +236,6 @@ func TestGetUserHandler_WhenReturnErrUserNotFound(t *testing.T) {
 
 	if response.Code != http.StatusNotFound {
 		t.Errorf("Status code esperado %d, retornado %d", http.StatusNotFound, response.Code)
-		return
 	}
 }
 
@@ -291,7 +286,6 @@ func TestGetAllUsersHandler_WhenReturnSucess(t *testing.T) {
 
 	if response.Code != http.StatusOK {
 		t.Errorf("Status code esperado %d, retornado %d", http.StatusOK, response.Code)
-		return
 	}
 
 	body, _ := io.ReadAll(response.Body)
@@ -303,5 +297,52 @@ func TestGetAllUsersHandler_WhenReturnSucess(t *testing.T) {
 
 	if !reflect.DeepEqual(users, resposta) {
 		t.Errorf("Resposta esperada %+v, retornada %+v", users, resposta)
+	}
+}
+
+func TestGetAllUsersHandler_WhenReturnError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	mockService := service.NewMockService(ctrl)
+	handler := NewUserHandler(mockService)
+
+	endpoint := "/users"
+	response := httptest.NewRecorder()
+	request := httptest.NewRequest("GET", endpoint, nil)
+
+	mockService.EXPECT().
+		GetAllUsers().
+		Return(nil, errors.New("some error"))
+
+	handler.GetAllUsers(response, request)
+
+	if response.Code != http.StatusBadRequest {
+		t.Errorf("Status code esperado %d, retornado %d", http.StatusBadRequest, response.Code)
+	}
+}
+
+func TestGetAllUsers_WhenReturnNotFound(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	mockService := service.NewMockService(ctrl)
+	handler := NewUserHandler(mockService)
+
+	endpoint := "/users"
+	response := httptest.NewRecorder()
+	request := httptest.NewRequest("GET", endpoint, nil)
+
+	mockService.EXPECT().
+		GetAllUsers().
+		Return(nil, errs.ErrUsersNotFound)
+
+	handler.GetAllUsers(response, request)
+
+	if response.Code != http.StatusNotFound {
+		t.Errorf("Status code esperado %d, retornado %d", http.StatusNotFound, response.Code)
+	}
+
+	erroEsperado := "no users found"
+	if strings.TrimSpace(response.Body.String()) != erroEsperado {
+		t.Errorf("esperava o erro %s, retornado %s", erroEsperado, response.Body.String())
 	}
 }
