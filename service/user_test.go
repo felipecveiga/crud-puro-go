@@ -13,6 +13,7 @@ import (
 
 func TestCreateUser_WhenCreateAccount_ReturnSucess(t *testing.T) {
 	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 	mockRepo := repository.NewMockRepository(ctrl)
 	service := NewUserService(mockRepo)
 
@@ -41,6 +42,7 @@ func TestCreateUser_WhenCreateAccount_ReturnSucess(t *testing.T) {
 
 func TestCreateUser_WhenCreateAccount_ReturnErrorNameEmpty(t *testing.T) {
 	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 	mockRepo := repository.NewMockRepository(ctrl)
 	service := NewUserService(mockRepo)
 
@@ -66,6 +68,7 @@ func TestCreateUser_WhenCreateAccount_ReturnErrorNameEmpty(t *testing.T) {
 
 func TestCreateUser_WhenCreateAccount_ReturnErrorCreate(t *testing.T) {
 	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 	mockRepo := repository.NewMockRepository(ctrl)
 	service := NewUserService(mockRepo)
 
@@ -95,6 +98,7 @@ func TestCreateUser_WhenCreateAccount_ReturnErrorCreate(t *testing.T) {
 
 func TestGetUser_WhenGetUser_ReturnSucess(t *testing.T) {
 	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 	mockRepo := repository.NewMockRepository(ctrl)
 	service := NewUserService(mockRepo)
 
@@ -125,6 +129,7 @@ func TestGetUser_WhenGetUser_ReturnSucess(t *testing.T) {
 
 func TestGetUser_WhenGetUser_ReturnErrorUserNotFound(t *testing.T) {
 	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 	mockRepo := repository.NewMockRepository(ctrl)
 	service := NewUserService(mockRepo)
 
@@ -141,6 +146,7 @@ func TestGetUser_WhenGetUser_ReturnErrorUserNotFound(t *testing.T) {
 
 func TestGetUser_WhenGetUser_ReturnError(t *testing.T) {
 	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 	mockRepo := repository.NewMockRepository(ctrl)
 	service := NewUserService(mockRepo)
 
@@ -153,4 +159,74 @@ func TestGetUser_WhenGetUser_ReturnError(t *testing.T) {
 
 	assert.Error(t, err)
 	assert.EqualError(t, err, "failed to search for user")
+}
+
+func TestGetAllUsers_WhenReturnSucess(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	mockRepo := repository.NewMockRepository(ctrl)
+	service := NewUserService(mockRepo)
+
+	users := []model.User{
+		{
+			Name:  "Felipe",
+			Email: "felipe@gmail.com",
+			Sexo:  "Masculino",
+			Age:   31,
+			Phone: 21212121,
+			Residence: model.Residence{
+				Street:  "Brasil",
+				City:    "Rio de Janeiro",
+				Country: "Rua ABC",
+				Number:  30,
+			},
+		},
+		{
+			Name:  "Isabelle",
+			Email: "Isabelle@gmail.com",
+			Sexo:  "Feminino",
+			Age:   29,
+			Phone: 21212121,
+			Residence: model.Residence{
+				Street:  "Brasil",
+				City:    "Rio de Janeiro",
+				Country: "Rua ABC",
+				Number:  30,
+			},
+		},
+	}
+
+	mockRepo.EXPECT().
+		FindAll().
+		Return(users, nil)
+
+	result, err := service.GetAllUsers()
+
+	assert.NoError(t, err)
+	assert.Equal(t, users, result)
+}
+
+func TestGetAllUsers_WhenReturError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	mockRepo := repository.NewMockRepository(ctrl)
+	service := NewUserService(mockRepo)
+
+	expectedErr := errors.New("some error")
+	mockRepo.EXPECT().
+		FindAll().
+		Return(nil, expectedErr)
+
+	_, err := service.GetAllUsers()
+
+	assert.Error(t, err)
+	assert.Equal(t, expectedErr, err)
+}
+
+func TestGetAllUsers_WhenReturErrUsersSearchFailed(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	mockRepo := repository.NewMockRepository(ctrl)
+	service := NewUserService(mockRepo)
+
 }
