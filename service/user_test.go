@@ -229,7 +229,6 @@ func TestGetAllUsers_WhenReturnErrUsersSearchFailed(t *testing.T) {
 	mockRepo := repository.NewMockRepository(ctrl)
 	service := NewUserService(mockRepo)
 
-	expected := errs.ErrUsersSearchFailed
 	mockRepo.EXPECT().
 		FindAll().
 		Return(nil, errs.ErrUsersSearchFailed)
@@ -237,5 +236,19 @@ func TestGetAllUsers_WhenReturnErrUsersSearchFailed(t *testing.T) {
 	_, err := service.GetAllUsers()
 
 	assert.Error(t,err)
-	assert.Equal(t, expected, err)
+	assert.Equal(t, errs.ErrUsersSearchFailed, err)
+}
+
+func TestGetAllUsers_WhenReturnErrUsersNotFound(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	mockRepo := repository.NewMockRepository(ctrl)
+	service := NewUserService(mockRepo)
+
+	mockRepo.EXPECT().FindAll().Return(nil, errs.ErrUsersNotFound)
+
+	_, err := service.GetAllUsers()
+
+	assert.Error(t,err)
+	assert.Equal(t, errs.ErrUsersNotFound, err)
 }
