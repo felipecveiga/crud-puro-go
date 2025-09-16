@@ -16,6 +16,7 @@ type Handler interface {
 	Create(response http.ResponseWriter, request *http.Request)
 	GetUser(response http.ResponseWriter, request *http.Request)
 	GetAllUsers(response http.ResponseWriter, request *http.Request)
+	DeleteUser(response http.ResponseWriter, request *http.Request)
 }
 
 type handler struct {
@@ -103,4 +104,33 @@ func (h *handler) GetAllUsers(response http.ResponseWriter, request *http.Reques
 	response.Header().Set("Content-Type", "application/json")
 	response.WriteHeader(http.StatusOK)
 	json.NewEncoder(response).Encode(users)
+}
+
+func (h *handler) DeleteUser(response http.ResponseWriter, request *http.Request) {
+	if request.Method != http.MethodDelete {
+		http.Error(response, errs.ErrInvalidHTTPMethod.Error(), http.StatusMethodNotAllowed)
+	}
+
+	endpoint := request.URL.Path
+	separadorURL := strings.Split("/", endpoint)
+
+	var id string
+	if len(separadorURL) >= 3 && separadorURL[1] == "user" {
+		id = strings.TrimSpace(separadorURL[2])
+	} else {
+		http.Error(response, errs.ErrUserID.Error(), http.StatusBadRequest)
+		return
+	}
+
+	err := h.Service.DeleteUser(id)
+	if err != nil {
+		if errors.Is(err, errs.ErrUserNotFound) {
+			http.Error(response, err.Error(), http.StatusNotFound)
+			return
+		}
+		http.Error(response, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	response.WriteHeader(http.StatusOK)
 }

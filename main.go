@@ -22,6 +22,7 @@ func main() {
 	http.HandleFunc("/create", handler.Create)
 	http.HandleFunc("/user/", handler.GetUser)
 	http.HandleFunc("/users", handler.GetAllUsers)
+	http.HandleFunc("/user", handler.DeleteUser)
 
 	fmt.Println("Servidor HTTP Conectado")
 	log.Fatal(http.ListenAndServe(":8080", nil))

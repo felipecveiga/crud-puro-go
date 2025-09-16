@@ -11,6 +11,7 @@ type Service interface {
 	CreateUser(payload *model.User) error
 	GetUser(id string) (*model.User, error)
 	GetAllUsers() ([]model.User, error)
+	DeleteUser(id string) error
 }
 
 type service struct {
@@ -55,4 +56,8 @@ func (s *service) GetAllUsers() ([]model.User, error) {
 	}
 
 	return users, nil
+}
+
+func (s *service) DeleteUser(id string) error {
+	return nil
 }
