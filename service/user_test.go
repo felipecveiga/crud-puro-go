@@ -223,10 +223,19 @@ func TestGetAllUsers_WhenReturError(t *testing.T) {
 	assert.Equal(t, expectedErr, err)
 }
 
-func TestGetAllUsers_WhenReturErrUsersSearchFailed(t *testing.T) {
+func TestGetAllUsers_WhenReturnErrUsersSearchFailed(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockRepo := repository.NewMockRepository(ctrl)
 	service := NewUserService(mockRepo)
 
+	expected := errs.ErrUsersSearchFailed
+	mockRepo.EXPECT().
+		FindAll().
+		Return(nil, errs.ErrUsersSearchFailed)
+
+	_, err := service.GetAllUsers()
+
+	assert.Error(t,err)
+	assert.Equal(t, expected, err)
 }
