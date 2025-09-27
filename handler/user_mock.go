@@ -52,6 +52,18 @@ func (mr *MockHandlerMockRecorder) Create(response, request any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockHandler)(nil).Create), response, request)
 }
 
+// DeleteUser mocks base method.
+func (m *MockHandler) DeleteUser(response http.ResponseWriter, request *http.Request) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "DeleteUser", response, request)
+}
+
+// DeleteUser indicates an expected call of DeleteUser.
+func (mr *MockHandlerMockRecorder) DeleteUser(response, request any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUser", reflect.TypeOf((*MockHandler)(nil).DeleteUser), response, request)
+}
+
 // GetAllUsers mocks base method.
 func (m *MockHandler) GetAllUsers(response http.ResponseWriter, request *http.Request) {
 	m.ctrl.T.Helper()

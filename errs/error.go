@@ -3,8 +3,10 @@ package errs
 import "errors"
 
 var (
+	ErrDeleteUser        = errors.New("error when delete user")
 	ErrUserNotFound      = errors.New("user not found")
 	ErrUserID            = errors.New("user ID error")
+	ErrIDInvalid         = errors.New("id invalid")
 	ErrUserInsertFailed  = errors.New("failed to insert user into database")
 	ErrUserSearchFailed  = errors.New("failed to search for user")
 	ErrUsersSearchFailed = errors.New("failed to search for users")

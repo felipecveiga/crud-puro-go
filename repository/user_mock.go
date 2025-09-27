@@ -13,6 +13,7 @@ import (
 	reflect "reflect"
 
 	model "github.com/felipecveiga/crud-puro-go/model"
+	mongo "go.mongodb.org/mongo-driver/mongo"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -52,6 +53,21 @@ func (m *MockRepository) CreateUserDB(payload *model.User) error {
 func (mr *MockRepositoryMockRecorder) CreateUserDB(payload any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUserDB", reflect.TypeOf((*MockRepository)(nil).CreateUserDB), payload)
+}
+
+// DeleteUserByID mocks base method.
+func (m *MockRepository) DeleteUserByID(id string) (*mongo.DeleteResult, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteUserByID", id)
+	ret0, _ := ret[0].(*mongo.DeleteResult)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteUserByID indicates an expected call of DeleteUserByID.
+func (mr *MockRepositoryMockRecorder) DeleteUserByID(id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUserByID", reflect.TypeOf((*MockRepository)(nil).DeleteUserByID), id)
 }
 
 // FindAll mocks base method.

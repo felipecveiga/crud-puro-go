@@ -18,6 +18,7 @@ type Repository interface {
 	CreateUserDB(payload *model.User) error
 	FindByID(id string) (*model.User, error)
 	FindAll() ([]model.User, error)
+	DeleteUserByID(id string) (*mongo.DeleteResult, error)
 }
 
 type repository struct {
@@ -98,4 +99,20 @@ func (r *repository) FindAll() ([]model.User, error) {
 	}
 
 	return users, nil
+}
+
+func (r *repository) DeleteUserByID(id string) (*mongo.DeleteResult, error) {
+	coll := r.DB.Database("estudo_mongo").Collection("funcionarios")
+
+	objectID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, errs.ErrInvalidObjectID
+	}
+
+	result, err := coll.DeleteOne(context.TODO(), bson.D{{Key: "_id", Value: objectID}})
+	if err != nil {
+		return nil, errs.ErrDeleteUser
+	}
+
+	return result, nil
 }

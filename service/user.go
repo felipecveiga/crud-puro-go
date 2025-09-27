@@ -59,5 +59,19 @@ func (s *service) GetAllUsers() ([]model.User, error) {
 }
 
 func (s *service) DeleteUser(id string) error {
+
+	if len(id) != 24 {
+		return errs.ErrIDInvalid 	
+	} 
+	_, err := s.Repository.FindByID(id)
+	if err != nil {
+		return errs.ErrUserNotFound
+	}
+
+	_, err = s.Repository.DeleteUserByID(id)
+	if err != nil {
+		return errs.ErrDeleteUser
+	}
+
 	return nil
 }
