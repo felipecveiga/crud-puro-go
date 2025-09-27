@@ -116,7 +116,7 @@ func (h *handler) DeleteUser(response http.ResponseWriter, request *http.Request
 	separadorURL := strings.Split(endpoint, "/")
 
 	var id string
-	if len(separadorURL) >= 3 && separadorURL[1] == "deleteUser" {
+	if len(separadorURL) >= 3 && separadorURL[1] == "delete" {
 		id = strings.TrimSpace(separadorURL[2])
 	} else {
 		http.Error(response, errs.ErrUserID.Error(), http.StatusBadRequest)
@@ -129,7 +129,7 @@ func (h *handler) DeleteUser(response http.ResponseWriter, request *http.Request
 			http.Error(response, err.Error(), http.StatusNotFound)
 			return
 		}
-		
+
 		http.Error(response, err.Error(), http.StatusBadRequest)
 		return
 	}

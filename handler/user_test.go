@@ -363,3 +363,25 @@ func TestGetAllUsers_WhenReturnErrorMethodRequest(t *testing.T) {
 		t.Errorf("método da requisição invalido eperado %d, resultado %d", http.StatusMethodNotAllowed, response.Code)
 	}
 }
+
+func TestDeleteUser_WhenReturnSucess(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	mockService := service.NewMockService(ctrl)
+	handler := NewUserHandler(mockService)
+
+	endpoint := "/delete/686d6d079199334b7cb5f89a"
+	response := httptest.NewRecorder()
+	request := httptest.NewRequest("DELETE", endpoint, nil)
+
+	id := "686d6d079199334b7cb5f89a"
+	mockService.EXPECT().
+	DeleteUser(id).
+	Return(nil)
+
+	handler.DeleteUser(response, request)
+
+	if response.Code != http.StatusNoContent {
+		t.Errorf("esperava o status code %d, retornado %d", http.StatusNoContent, response.Code)
+	}
+}
