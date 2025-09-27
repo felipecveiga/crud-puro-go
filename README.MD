@@ -38,8 +38,8 @@ A cada funcionalidade finalizada, este README será atualizado.
 ├── config/
 │   └── db/
 │       └── db.go           # Configuração do cliente MongoDB
-│   └── errs/
-│       └── error.go        # Define os erros
+├── errs/
+│   └── error.go            # Define os erros
 ├── handler/
 │   └── user.go             # Manipula as requisições (entrada/saída)
 ├── model/
