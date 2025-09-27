@@ -23,11 +23,11 @@ O objetivo principal é aprofundar o conhecimento na linguagem Go, explorando di
 
 ✅ Listar usuário (Read)
 
-❌ Listar usuários (Read) — em desenvolvimento
+✅ Listar usuários (Read) — em desenvolvimento
 
 ❌ Atualizar dados do usuário (Update) — em desenvolvimento
 
-❌ Remover usuário (Delete) — em desenvolvimento
+✅ Remover usuário (Delete) — em desenvolvimento
 
 A cada funcionalidade finalizada, este README será atualizado.
 
@@ -38,6 +38,8 @@ A cada funcionalidade finalizada, este README será atualizado.
 ├── config/
 │   └── db/
 │       └── db.go           # Configuração do cliente MongoDB
+│   └── errs/
+│       └── error.go        # Define os erros
 ├── handler/
 │   └── user.go             # Manipula as requisições (entrada/saída)
 ├── model/
