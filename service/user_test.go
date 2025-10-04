@@ -8,6 +8,7 @@ import (
 	"github.com/felipecveiga/crud-puro-go/model"
 	"github.com/felipecveiga/crud-puro-go/repository"
 	"github.com/stretchr/testify/assert"
+	"go.mongodb.org/mongo-driver/mongo"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -235,7 +236,7 @@ func TestGetAllUsers_WhenReturnErrUsersSearchFailed(t *testing.T) {
 
 	_, err := service.GetAllUsers()
 
-	assert.Error(t,err)
+	assert.Error(t, err)
 	assert.Equal(t, errs.ErrUsersSearchFailed, err)
 }
 
@@ -249,6 +250,28 @@ func TestGetAllUsers_WhenReturnErrUsersNotFound(t *testing.T) {
 
 	_, err := service.GetAllUsers()
 
-	assert.Error(t,err)
+	assert.Error(t, err)
 	assert.Equal(t, errs.ErrUsersNotFound, err)
+}
+
+func TestDeleteUser_WhenReturnSucess(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	mockRepo := repository.NewMockRepository(ctrl)
+	service := NewUserService(mockRepo)
+
+	id := "68841e9a6fddee1b71e92d16"
+	deleteResult := &mongo.DeleteResult{DeletedCount: 1}
+
+	mockRepo.EXPECT().
+		FindByID(id).
+		Return(&model.User{}, nil)
+
+	mockRepo.EXPECT().
+		DeleteUserByID(id).
+		Return(deleteResult, nil)
+
+	err := service.DeleteUser(id)
+
+	assert.NoError(t, err)
 }
