@@ -276,6 +276,20 @@ func TestDeleteUser_WhenReturnSucess(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+func TestDeleteUser_WhenReturnErrorID(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	mockRepo := repository.NewMockRepository(ctrl)
+	service := NewUserService(mockRepo)
+
+	id := "123"
+
+	err := service.DeleteUser(id)
+
+	assert.Error(t, err)
+	assert.EqualError(t, err, errs.ErrIDInvalid.Error())
+}
+
 func TestDeleteUser_WhenReturnUserNotFound(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
