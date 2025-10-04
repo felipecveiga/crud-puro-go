@@ -402,3 +402,25 @@ func TestDeleteUser_WhenReturnMethodInvalid(t *testing.T) {
 		t.Errorf("esperava o status code %d, retornado %d", http.StatusMethodNotAllowed, response.Code)
 	}
 }
+
+func TestDeleteUser_WhenReturnUserNotFound(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	mockService := service.NewMockService(ctrl)
+	handler := NewUserHandler(mockService)
+
+	endpoint := "/delete/686d6d079199334b7cb5f89a"
+	response := httptest.NewRecorder()
+	request := httptest.NewRequest(http.MethodDelete, endpoint, nil)
+
+	id := "686d6d079199334b7cb5f89a"
+	mockService.EXPECT().
+		DeleteUser(id).
+		Return(errs.ErrUserNotFound)
+
+	handler.DeleteUser(response, request)
+
+	if response.Code != http.StatusNotFound {
+		t.Errorf("esperava o status code %d, retornado %d", http.StatusNotFound, response.Code)
+	}
+}
