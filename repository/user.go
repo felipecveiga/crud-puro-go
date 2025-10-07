@@ -19,7 +19,7 @@ type Repository interface {
 	FindByID(id string) (*model.User, error)
 	FindAll() ([]model.User, error)
 	DeleteUserByID(id string) (*mongo.DeleteResult, error)
-	UpdateUserByID(id string, payload *model.User) error
+	UpdateUserByID(id string, payload *model.User) (*mongo.UpdateResult, error)
 }
 
 type repository struct {
@@ -118,8 +118,33 @@ func (r *repository) DeleteUserByID(id string) (*mongo.DeleteResult, error) {
 	return result, nil
 }
 
+func (r *repository) UpdateUserByID(id string, payload *model.User) (*mongo.UpdateResult, error) {
+	coll := r.DB.Database("estudo_mong").Collection("funcionarios")
 
-func (r *repository) UpdateUserByID(id string, payload *model.User) error {
+	objectID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, errs.ErrInvalidObjectID
+	}
 
-	return nil
+	docs := model.User{
+		ID:    payload.ID,
+		Name:  payload.Name,
+		Email: payload.Email,
+		Sexo:  payload.Sexo,
+		Age:   payload.Age,
+		Phone: payload.Phone,
+		Residence: model.Residence{
+			Street:  payload.Residence.Street,
+			City:    payload.Residence.City,
+			Country: payload.Residence.Country,
+			Number:  payload.Residence.Number,
+		},
+	}
+
+	result, err := coll.UpdateOne(context.TODO(), bson.M{"_id": objectID}, bson.M{"$set": docs})
+	if err != nil {
+		return nil, errs.ErrUpdateUser
+	}
+
+	return result, nil
 }

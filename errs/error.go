@@ -11,6 +11,7 @@ var (
 	ErrUserSearchFailed  = errors.New("failed to search for user")
 	ErrUsersSearchFailed = errors.New("failed to search for users")
 	ErrUsersNotFound     = errors.New("no users found")
+	ErrUpdateUser        = errors.New("error when update user")
 
 	ErrInvalidPayload        = errors.New("invalid payload")
 	ErrInvalidHTTPMethod     = errors.New("invalid HTTP method")

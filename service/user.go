@@ -88,7 +88,7 @@ func (s *service) UpdateUser(id string, payload *model.User) error {
 		return errs.ErrUserNotFound
 	}
 
-	err = s.Repository.UpdateUserByID(id, payload)
+	_, err = s.Repository.UpdateUserByID(id, payload)
 	if err != nil {
 		return errs.ErrDeleteUser
 	}
