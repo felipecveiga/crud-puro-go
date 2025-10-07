@@ -12,6 +12,7 @@ type Service interface {
 	GetUser(id string) (*model.User, error)
 	GetAllUsers() ([]model.User, error)
 	DeleteUser(id string) error
+	UpdateUser(id string, payload *model.User) error
 }
 
 type service struct {
@@ -61,14 +62,33 @@ func (s *service) GetAllUsers() ([]model.User, error) {
 func (s *service) DeleteUser(id string) error {
 
 	if len(id) != 24 {
-		return errs.ErrIDInvalid 	
-	} 
+		return errs.ErrIDInvalid
+	}
+
 	_, err := s.Repository.FindByID(id)
 	if err != nil {
 		return errs.ErrUserNotFound
 	}
 
 	_, err = s.Repository.DeleteUserByID(id)
+	if err != nil {
+		return errs.ErrDeleteUser
+	}
+
+	return nil
+}
+
+func (s *service) UpdateUser(id string, payload *model.User) error {
+	if len(id) != 24 {
+		return errs.ErrIDInvalid
+	}
+
+	_, err := s.Repository.FindByID(id)
+	if err != nil {
+		return errs.ErrUserNotFound
+	}
+
+	err = s.Repository.UpdateUserByID(id, payload)
 	if err != nil {
 		return errs.ErrDeleteUser
 	}

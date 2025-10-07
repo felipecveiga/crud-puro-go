@@ -6,11 +6,11 @@ import (
 
 type User struct {
 	ID        primitive.ObjectID `bson:"_id,omitempty"`
-	Name      string             `bson:"name"`
-	Email     string             `bson:"email"`
-	Sexo      string             `bson:"sexo"`
-	Age       int                `bson:"age"`
-	Phone     int                `bson:"phone"`
+	Name      string             `bson:"name,omitempty"`
+	Email     string             `bson:"email,omitempty"`
+	Sexo      string             `bson:"sexo,omitempty"`
+	Age       int                `bson:"age,omitempty"`
+	Phone     int                `bson:"phone,omitempty"`
 	Residence Residence          `bson:"residence,omitempty"`
 }
 

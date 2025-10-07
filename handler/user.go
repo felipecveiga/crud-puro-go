@@ -17,6 +17,7 @@ type Handler interface {
 	GetUser(response http.ResponseWriter, request *http.Request)
 	GetAllUsers(response http.ResponseWriter, request *http.Request)
 	DeleteUser(response http.ResponseWriter, request *http.Request)
+	UpdateUser(response http.ResponseWriter, request *http.Request)
 }
 
 type handler struct {
@@ -124,6 +125,44 @@ func (h *handler) DeleteUser(response http.ResponseWriter, request *http.Request
 	}
 
 	err := h.Service.DeleteUser(id)
+	if err != nil {
+		if errors.Is(err, errs.ErrUserNotFound) {
+			http.Error(response, err.Error(), http.StatusNotFound)
+			return
+		}
+
+		http.Error(response, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	response.WriteHeader(http.StatusNoContent)
+}
+
+func(h *handler) UpdateUser(response http.ResponseWriter, request *http.Request) {
+	if request.Method != http.MethodPatch {
+		http.Error(response, errs.ErrInvalidHTTPMethod.Error(), http.StatusMethodNotAllowed)
+		return
+	}
+
+	endpoint := request.URL.Path
+	separadorURL := strings.Split(endpoint, "/")
+	
+	var id string
+	if len(separadorURL) >= 3 && separadorURL[1] == "update" {
+		id = strings.TrimSpace(separadorURL[2])
+	} else {
+		http.Error(response, errs.ErrIDInvalid.Error(), http.StatusBadRequest)
+		return
+	}
+
+	payload := new(model.User)
+	err := json.NewDecoder(request.Body).Decode(payload)
+	if err != nil {
+		http.Error(response, errs.ErrInvalidPayload.Error(), http.StatusBadRequest)
+		return
+	}
+
+	err = h.Service.UpdateUser(id, payload)
 	if err != nil {
 		if errors.Is(err, errs.ErrUserNotFound) {
 			http.Error(response, err.Error(), http.StatusNotFound)

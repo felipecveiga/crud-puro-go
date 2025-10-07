@@ -19,6 +19,7 @@ type Repository interface {
 	FindByID(id string) (*model.User, error)
 	FindAll() ([]model.User, error)
 	DeleteUserByID(id string) (*mongo.DeleteResult, error)
+	UpdateUserByID(id string, payload *model.User) error
 }
 
 type repository struct {
@@ -115,4 +116,10 @@ func (r *repository) DeleteUserByID(id string) (*mongo.DeleteResult, error) {
 	}
 
 	return result, nil
+}
+
+
+func (r *repository) UpdateUserByID(id string, payload *model.User) error {
+
+	return nil
 }
